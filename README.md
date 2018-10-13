@@ -1,5 +1,4 @@
 # redux-dynamic
-===============
 
 Allow add or remove redux modules dynamically (for example: on route change).
 
