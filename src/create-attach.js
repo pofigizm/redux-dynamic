@@ -2,11 +2,16 @@ import { combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
 const createAttach = (data, store, dynamicMiddlewares) => ({
+  initialState = {},
   reducers = {},
   thunkConfig = {},
   middleware,
 }) => {
-  const nextReducers = { ...data.reducers, ...reducers }
+  const nextReducers = Object.keys(reducers)
+    .reduce((acc, key) => {
+      acc[key] = (state = initialState[key], action) => reducers[key](state, action)
+      return acc
+    }, { ...data.reducers })
   store.replaceReducer(combineReducers(nextReducers))
 
   const nextThunkConfig = { ...data.thunkConfig, ...thunkConfig }
