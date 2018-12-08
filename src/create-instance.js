@@ -10,6 +10,8 @@ const emptyReducers = {
 }
 
 const createInstance = ({
+  name,
+  withDevTools,
   initialState = {},
   reducers = emptyReducers,
   thunkConfig = {},
@@ -17,11 +19,13 @@ const createInstance = ({
   const data = { reducers, thunkConfig }
 
   const dynamicMiddlewaresInstance = createDynamicMiddlewares()
-  const store = configureStore(
+  const store = configureStore({
+    name,
+    withDevTools,
     initialState,
-    combineReducers(data.reducers),
-    dynamicMiddlewaresInstance.enhancer
-  )
+    rootReducer: combineReducers(data.reducers),
+    dynamicMiddlewares: dynamicMiddlewaresInstance.enhancer,
+  })
 
   data.thunk = thunkMiddleware.withExtraArgument(data.thunkConfig)
   dynamicMiddlewaresInstance.addMiddleware(data.thunk)
