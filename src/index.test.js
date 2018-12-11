@@ -6,6 +6,18 @@ const reducer = (state = {}, action) => {
   return state
 }
 
+test('reduxDynamic without params', () => {
+  console.error = jest.fn()
+
+  const dynamicStore = createInstance()
+
+  const store = dynamicStore.getStore()
+  expect(store.getState()).toEqual({ __EMPTY__: {} })
+
+  store.dispatch({ type: 'foo' })
+  expect(console.error).not.toBeCalled()
+})
+
 test('reduxDynamic one module', () => {
   console.error = jest.fn()
 

@@ -11,17 +11,13 @@ const emptyReducer = (state = {}) => state
 
 const createInstance = ({
   name = 'redux-dynamic',
-  key,
+  key = '__EMPTY__',
   initial = {},
   thunk = {},
   reducer = emptyReducer,
   middleware = emptyMiddleware,
   withDevTools = true,
 } = {}) => {
-  if (!key) {
-    console.error('Key is not defined.')
-  }
-
   const dynamicMiddlewares = createDynamicMiddlewares()
   const registry = {
     keys: {
