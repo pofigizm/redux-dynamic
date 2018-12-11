@@ -52,9 +52,16 @@ const createInstance = ({
   const thunkObject = thunkMiddleware.withExtraArgument(registry.thunks)
   dynamicMiddlewares.addMiddleware(thunkObject)
 
-  Object.values(registry.middlewares)
-    .forEach((mdware) => {
-      dynamicMiddlewares.addMiddleware(mdware)
+  Object.keys(registry.middlewares)
+    .forEach((k) => {
+      const wrapper = s => n => (a) => {
+        // eslint-disable-next-line no-prototype-builtins
+        if (!registry.keys.hasOwnProperty(k)) {
+          return n(a)
+        }
+        return registry.middlewares[k](s)(n)(a)
+      }
+      dynamicMiddlewares.addMiddleware(wrapper)
     })
 
   const getStore = () => store

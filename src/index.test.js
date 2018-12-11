@@ -102,3 +102,27 @@ test('reduxDynamic middlewares', () => {
   store.dispatch({ type: 'foo' })
   expect(fx.mock.calls.length).toBe(3)
 })
+
+test('reduxDynamic middlewares prevent previous call', () => {
+  const fx = jest.fn()
+  let dynamicStore
+
+  const middlewareOne = () => next => (action) => {
+    dynamicStore.detach({ key: 'two' })
+    next(action)
+  }
+
+  const middlewareTwo = () => next => (action) => {
+    fx()
+    next(action)
+  }
+
+  dynamicStore = createInstance({ key: 'one', middleware: middlewareOne })
+  dynamicStore.attach({ key: 'two', middleware: middlewareTwo })
+
+  const store = dynamicStore.getStore()
+  store.dispatch((dispatch) => {
+    dispatch({ type: 'foo' })
+  })
+  expect(fx).not.toBeCalled()
+})
