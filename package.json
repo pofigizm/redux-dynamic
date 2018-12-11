@@ -1,6 +1,6 @@
 {
   "name": "redux-dynamic",
-  "version": "0.2.5",
+  "version": "1.0.0-beta.0",
   "description": "Allow add or remove redux modules dynamically",
   "main": "lib/index.js",
   "scripts": {

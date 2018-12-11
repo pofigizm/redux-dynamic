@@ -1,33 +1,60 @@
+/* eslint-disable no-console */
+/* eslint-disable no-param-reassign */
 import { combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
-const createAttach = (data, store, dynamicMiddlewares) => ({
-  initialState = {},
-  reducers = {},
-  thunkConfig = {},
-  middleware,
+const emptyMiddleware = () => next => action => next(action)
+const emptyReducer = (state = {}) => state
+
+const createAttach = (registry, store, dynamicMiddlewares) => ({
+  key,
+  initial = {},
+  thunk = {},
+  reducer = emptyReducer,
+  middleware = emptyMiddleware,
 }) => {
-  const nextReducers = Object.keys(reducers)
-    .reduce((acc, key) => {
-      acc[key] = (state = initialState[key], action) => reducers[key](state, action)
-      return acc
-    }, { ...data.reducers })
-  store.replaceReducer(combineReducers(nextReducers))
-
-  const nextThunkConfig = { ...data.thunkConfig, ...thunkConfig }
-  dynamicMiddlewares.removeMiddleware(data.thunk)
-  const nextThunk = thunkMiddleware.withExtraArgument(nextThunkConfig)
-  dynamicMiddlewares.addMiddleware(nextThunk)
-
-  if (middleware) {
-    dynamicMiddlewares.addMiddleware(middleware)
+  if (!key) {
+    console.error('Key is not defined.')
+    return false
   }
 
-  /* eslint-disable no-param-reassign */
-  data.reducers = nextReducers
-  data.thunkConfig = nextThunkConfig
-  data.thunk = nextThunk
-  /* eslint-enable no-param-reassign */
+  if (registry.keys[key]) {
+    console.error('Store already has a same key.')
+    return false
+  }
+
+  registry.keys = {
+    ...registry.keys,
+    [key]: true,
+  }
+
+  registry.reducers = {
+    ...registry.reducers,
+    [key]: (state = initial, action) => reducer(state, action),
+  }
+
+  registry.thunks = {
+    ...registry.thunks,
+    [key]: thunk,
+  }
+
+  registry.middlewares = {
+    ...registry.middlewares,
+    [key]: middleware,
+  }
+
+  store.replaceReducer(combineReducers(registry.reducers))
+  dynamicMiddlewares.resetMiddlewares()
+
+  const thunkObject = thunkMiddleware.withExtraArgument(registry.thunks)
+  dynamicMiddlewares.addMiddleware(thunkObject)
+
+  Object.values(registry.middlewares)
+    .forEach((mdware) => {
+      dynamicMiddlewares.addMiddleware(mdware)
+    })
+
+  return true
 }
 
 export {
