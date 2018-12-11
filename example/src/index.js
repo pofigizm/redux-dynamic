@@ -9,7 +9,7 @@ import { createInstance } from 'redux-dynamic'
 import Loadable from 'react-loadable';
 import * as moduleOne from './module-one';
 
-const dynamicStore = createInstance();
+const dynamicStore = createInstance({ key: 'base' });
 const store = dynamicStore.getStore();
 
 // sync module
