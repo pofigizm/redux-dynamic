@@ -21,9 +21,9 @@ const createDetach = (registry, store, dynamicMiddlewares) => ({
   delete registry.middlewares[key]
 
   const state = store.getState()
-  delete state[key]
 
   reloadState(registry, store, dynamicMiddlewares)
+  delete state[key]
 
   return true
 }
