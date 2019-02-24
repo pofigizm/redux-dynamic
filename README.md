@@ -1,5 +1,8 @@
 # redux-dynamic
 
+[![npm version](https://img.shields.io/npm/v/redux-dynamic.svg?style=flat-square)](https://www.npmjs.com/package/redux-dynamic)
+[![npm downloads](https://img.shields.io/npm/dm/redux-dynamic.svg?style=flat-square)](https://www.npmjs.com/package/redux-dynamic)
+
 Allow add or remove redux modules dynamically (for example: on route change).
 
 ```
