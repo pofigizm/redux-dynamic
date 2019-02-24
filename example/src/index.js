@@ -9,7 +9,7 @@ import { createInstance } from 'redux-dynamic'
 import Loadable from 'react-loadable';
 import * as moduleOne from './module-one';
 
-const dynamicStore = createInstance();
+const dynamicStore = createInstance({ key: 'base' });
 const store = dynamicStore.getStore();
 
 // sync module
@@ -19,15 +19,15 @@ store.dispatch(moduleOne.actions.init());
 
 // async module
 const ModuleTwoContainer = Loadable({
-  loader: () => import('./module-two'),
-  loading: () => <div> module-two loading... </div>,
-  render: (loaded, props) => {
+  loader: () => import('./module-two')
+    .then((loaded) => {
       const { Container, ...moduleTwo} = loaded;
       dynamicStore.attach(moduleTwo);
       store.dispatch(moduleTwo.actions.init());
 
-      return <Container {...props} />;
-  }
+      return Container;
+    }),
+  loading: () => <div> module-two loading... </div>
 });
 
 ReactDOM.render(

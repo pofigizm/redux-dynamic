@@ -5,20 +5,19 @@ import middleware from './middleware';
 import reducer from './reducer';
 import Container from './container';
 
-const reducers = {
-    [constants.STORE_KEY]: reducer
+const thunk = {
+    requestApi: () => new Promise(res => setTimeout(res, 2000))
 };
 
-const thunkConfig = {
-    requestOneApi: () => new Promise(res => setTimeout(res, 2000))
-};
+const key = constants.STORE_KEY;
 
 export {
+    key,
     actions,
     constants,
     middleware,
-    reducers,
+    reducer,
     selectors,
-    thunkConfig,
+    thunk,
     Container
 };

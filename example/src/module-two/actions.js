@@ -9,9 +9,9 @@ const change = (payload = {}) => {
     };
 };
 
-export const init = (props) => async (dispatch, getState, { requestTwoApi }) => {
+export const init = (props) => async (dispatch, getState, { moduleTwo }) => {
     await dispatch(change(props));
-    await requestTwoApi();
+    await moduleTwo.requestApi();
 
     return dispatch({ type: INIT });
 };

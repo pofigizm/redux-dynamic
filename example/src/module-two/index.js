@@ -5,28 +5,25 @@ import middleware from './middleware';
 import reducer, { initialState as state } from './reducer';
 import Container from './container';
 
-const reducers = {
-    [constants.STORE_KEY]: reducer
-};
-
-const initialState = {
-    [constants.STORE_KEY]: {
-        ...state,
-        someParam: true
-    }
+const initial = {
+    ...state,
+    someParam: true
 }
 
-const thunkConfig = {
-    requestTwoApi: () => new Promise(res => setTimeout(res, 2000))
+const thunk = {
+    requestApi: () => new Promise(res => setTimeout(res, 2000))
 };
 
+const key = constants.STORE_KEY
+
 export {
-    initialState,
+    key,
+    initial,
     actions,
     constants,
     middleware,
-    reducers,
+    reducer,
     selectors,
-    thunkConfig,
+    thunk,
     Container
 };
