@@ -2,11 +2,11 @@
 import { createInstance } from './index'
 
 const reducer = (state = {}, action) => {
-  if (action.type === 'foo') return { foo: 'bar' }
+  if (action.type === 'foo') return { ...state, foo: 'bar' }
   return state
 }
 
-test('reduxDynamic without params', () => {
+test('without params', () => {
   console.error = jest.fn()
 
   const dynamicStore = createInstance()
@@ -18,7 +18,7 @@ test('reduxDynamic without params', () => {
   expect(console.error).not.toBeCalled()
 })
 
-test('reduxDynamic one module', () => {
+test('one module', () => {
   console.error = jest.fn()
 
   const dynamicStore = createInstance({ key: 'key', reducer })
@@ -31,7 +31,7 @@ test('reduxDynamic one module', () => {
   expect(store.getState()).toEqual({ key: { foo: 'bar' } })
 })
 
-test('reduxDynamic attach and detach module', () => {
+test('attach and detach module', () => {
   console.error = jest.fn()
 
   const dynamicStore = createInstance({ key: 'one', reducer })
@@ -48,7 +48,7 @@ test('reduxDynamic attach and detach module', () => {
   expect(store.getState()).toEqual({ one: { foo: 'bar' } })
 })
 
-test('reduxDynamic attach same key', () => {
+test('attach same key', () => {
   console.error = jest.fn()
 
   const dynamicStore = createInstance({ key: 'one', reducer })
@@ -65,7 +65,7 @@ test('reduxDynamic attach same key', () => {
   expect(store.getState()).toEqual({ one: { foo: 'bar' } })
 })
 
-test('reduxDynamic initials', () => {
+test('initials', () => {
   const initial = { foo: 'bar' }
 
   const dynamicStore = createInstance({ key: 'one', initial })
@@ -78,7 +78,7 @@ test('reduxDynamic initials', () => {
   expect(store.getState()).toEqual({ one: { foo: 'bar' } })
 })
 
-test('reduxDynamic thunks', () => {
+test('thunks', () => {
   const thunk = { foo: 'bar' }
 
   const dynamicStore = createInstance({ key: 'one', thunk })
@@ -95,7 +95,7 @@ test('reduxDynamic thunks', () => {
   })
 })
 
-test('reduxDynamic middlewares', () => {
+test('middlewares', () => {
   const fx = jest.fn()
   const middleware = () => next => (action) => {
     fx()
@@ -115,7 +115,7 @@ test('reduxDynamic middlewares', () => {
   expect(fx.mock.calls.length).toBe(3)
 })
 
-test('reduxDynamic middlewares prevent previous call', () => {
+test('middlewares prevent previous call', () => {
   const fx = jest.fn()
   let dynamicStore
 
@@ -137,4 +137,23 @@ test('reduxDynamic middlewares prevent previous call', () => {
     dispatch({ type: 'foo' })
   })
   expect(fx).not.toBeCalled()
+})
+
+test('remove previous state', () => {
+  console.error = jest.fn()
+
+  const dynamicStore = createInstance({ key: 'one', reducer })
+  dynamicStore.attach({ key: 'two', reducer })
+
+  const store = dynamicStore.getStore()
+  store.dispatch({ type: 'foo' })
+
+  dynamicStore.detach({ key: 'two' })
+  dynamicStore.attach({ key: 'three', reducer })
+  store.dispatch({ type: 'foo' })
+
+  dynamicStore.detach({ key: 'three' })
+  dynamicStore.attach({ key: 'two', reducer })
+  expect(console.error).not.toBeCalled()
+  expect(store.getState()).toEqual({ one: { foo: 'bar' }, two: {} })
 })
