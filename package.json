@@ -1,6 +1,6 @@
 {
   "name": "redux-dynamic",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0",
   "description": "Allow add or remove redux modules dynamically",
   "main": "lib/index.js",
   "scripts": {
@@ -31,11 +31,11 @@
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-core": "6.26.3",
-    "babel-jest": "24.1.0",
+    "babel-jest": "23.6.0",
     "babel-preset-pofigizm": "1.0.0",
     "eslint": "5.14.1",
     "eslint-config-pofigizm": "1.0.0",
-    "jest": "24.1.0"
+    "jest": "23.6.0"
   },
   "babel": {
     "presets": [
