@@ -15,7 +15,7 @@ const createInstance = ({
   thunk = {},
   reducer = emptyReducer,
   middleware = emptyMiddleware,
-  withDevTools = true,
+  withDevTools,
 } = {}) => {
   const dynamicMiddlewares = createDynamicMiddlewares()
   const registry = {
