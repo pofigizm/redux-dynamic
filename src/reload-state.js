@@ -1,8 +1,7 @@
-import { combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
 const reloadState = (registry, store, dynamicMiddlewares) => {
-  store.replaceReducer(combineReducers(registry.reducers))
+  store.replaceReducer(registry.reducerWrapper(registry.reducers))
   dynamicMiddlewares.resetMiddlewares()
 
   const thunkObject = thunkMiddleware.withExtraArgument(registry.thunks)
