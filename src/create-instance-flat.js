@@ -1,5 +1,5 @@
-import { combineReducers } from 'redux'
 import { createDynamicMiddlewares } from 'redux-dynamic-middlewares'
+import { combineReducers } from 'redux';
 
 import { configureStore } from './configure-store'
 import { reloadState } from './reload-state'
@@ -9,7 +9,7 @@ import { createDetach } from './create-detach'
 const emptyMiddleware = () => next => action => next(action)
 const emptyReducer = (state = {}) => state
 
-const createInstance = ({
+const createInstanceFlat = ({
   name = 'redux-dynamic',
   key = '__EMPTY__',
   initial = {},
@@ -19,14 +19,18 @@ const createInstance = ({
   withDevTools,
 } = {}) => {
   const dynamicMiddlewares = createDynamicMiddlewares()
+  const reducerWrapper = reducer.wrapper ? reducer.wrapper : combineReducers
+  const reducerInitial = reducer.wrapper ? reducer.wrapper(reducer.reducers) : emptyReducer
+  const reducers = reducer.reducers ? { ...reducer.reducers } : { [key]: (state = initial, action) => reducer(state, action) }
+
+  dynamicMiddlewares.addMiddleware(middleware)
+
   const registry = {
     keys: {
       [key]: true,
     },
-    reducers: {
-      [key]: (state = initial, action) => reducer(state, action),
-    },
-    reducerWrapper: combineReducers,
+    reducers,
+    reducerWrapper,
     thunks: {
       [key]: thunk,
     },
@@ -39,7 +43,8 @@ const createInstance = ({
     name,
     withDevTools,
     key,
-    reducer: emptyReducer,
+    initial,
+    reducer: reducerInitial,
     dynamicMiddlewares: dynamicMiddlewares.enhancer,
   })
 
@@ -57,5 +62,5 @@ const createInstance = ({
 }
 
 export {
-  createInstance,
+  createInstanceFlat,
 }
