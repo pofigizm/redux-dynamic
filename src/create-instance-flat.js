@@ -17,6 +17,7 @@ const createInstanceFlat = ({
   reducer = emptyReducer,
   middleware = emptyMiddleware,
   withDevTools,
+  devToolsOptions,
 } = {}) => {
   const dynamicMiddlewares = createDynamicMiddlewares()
   const reducerWrapper = reducer.wrapper ? reducer.wrapper : combineReducers
@@ -42,6 +43,7 @@ const createInstanceFlat = ({
   const store = configureStore({
     name,
     withDevTools,
+    devToolsOptions,
     key,
     initial,
     reducer: reducerInitial,
