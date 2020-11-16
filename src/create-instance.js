@@ -17,6 +17,7 @@ const createInstance = ({
   reducer = emptyReducer,
   middleware = emptyMiddleware,
   withDevTools,
+  devToolsOptions,
 } = {}) => {
   const dynamicMiddlewares = createDynamicMiddlewares()
   const registry = {
@@ -38,6 +39,7 @@ const createInstance = ({
   const store = configureStore({
     name,
     withDevTools,
+    devToolsOptions,
     key,
     reducer: emptyReducer,
     dynamicMiddlewares: dynamicMiddlewares.enhancer,
